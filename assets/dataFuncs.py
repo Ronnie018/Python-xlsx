@@ -91,7 +91,7 @@ def getNextIndex(indexArray, curr):
   if(curr in indexArray):
     return indexArray[indexArray.index(curr) + 1]
   else:
-    print("something went wrong!")
+    print("erro em dataFuncs/getNextIndex()")
 
 
 def getPrevIndex(indexArray, curr):
@@ -99,7 +99,7 @@ def getPrevIndex(indexArray, curr):
   if(curr in indexArray):
     return indexArray[indexArray.index(curr) - 1]
   else:
-    print("something went wrong!")
+    print("erro em dataFuncs/getPrevIndex()")
 
 
 
@@ -128,15 +128,9 @@ def setCrossAttr(DayTable, flagCol, idCol, compCols):
   else:
     for line, value in DayTable.iterrows():
 
-      
-      ut.space(60, "+_")
-      print(DayTable.loc[line])
-      ut.space(60, "+_")
-
       isCrossed = True
 
       if line == firstVl:
-        print("_______ é first ________")
         if value[compCols[1]] < DayTable.loc[getNextIndex(IndexOrder, line), compCols[0]]:
           isCrossed = False
           DayTable.loc[line, flagCol] = False
@@ -145,7 +139,6 @@ def setCrossAttr(DayTable, flagCol, idCol, compCols):
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
       elif line == lastVl:
-        print("_______ é last ________")
         if value[compCols[0]] > DayTable.loc[getPrevIndex(IndexOrder, line), compCols[1]]:
           isCrossed = False
           DayTable.loc[line, flagCol] = False
