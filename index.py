@@ -81,9 +81,9 @@ idTables = df.getPersonalTables(
 )
 
 for idTable in idTables:
-  
+
   idTable[ newCols[4] ] = idTable[ newCols[0] ].sum()
 
   df.replacer(table, idTable)
 
-table.to_excel("files/step1.xlsx", index=False)
+table.to_excel("files/final.xlsx", index=False)
