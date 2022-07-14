@@ -8,7 +8,19 @@ newCols = [
   "date",
   "isCrossed",
   "cross_id",
-  "crossed_time"
+  "crossed_time",
+  "crossed_real_time",
+  "porcentagem",
+  "fraction"
+]
+
+internalCols = [
+  "call_time",
+  "date",
+  "isCrossed",
+  "cross_id",
+  "crossed_time",
+  "crossed_real_time"
 ]
 
 useCols = {
@@ -74,6 +86,7 @@ idTableNames = df.getValuesFromIds(
   table,
   newCols[3]
 )
+
 idTables = df.getPersonalTables(
   table,
   idTableNames,
@@ -83,7 +96,13 @@ idTables = df.getPersonalTables(
 for idTable in idTables:
 
   idTable[ newCols[4] ] = idTable[ newCols[0] ].sum()
+  idTable[ newCols[5] ] = idTable[ useCols["END"] ].max() - idTable[ useCols["START"] ].min()
 
+for idTable in idTables:
   df.replacer(table, idTable)
+
+df.createPercentCol(table, newCols[6], newCols[4], newCols[0])
+df.createFractCol(table, newCols[7], newCols[5], newCols[6], newCols[0])
+df.removeInternalCols(table, internalCols)
 
 table.to_excel("files/final.xlsx", index=False)

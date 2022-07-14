@@ -105,15 +105,22 @@ def getPrevIndex(indexArray, curr):
 
 def tokenCreator():
   alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+  special = "[{][/*+-,.=§/?°@#$%¨&*()&"
   token = ""
   for _ in range(0, 6):
     token += str(randint(0, 9))
     token += alph[randint(0, 51)]
+    token += special[randint(0, 26)]
   return token
 
 
 
-def setCrossAttr(DayTable, flagCol, idCol, compCols):
+def setCrossAttr(
+  DayTable,
+  flagCol,
+  idCol,
+  compCols
+):
 
   DayTable = DayTable.sort_values(by=compCols[0])
 
@@ -125,42 +132,83 @@ def setCrossAttr(DayTable, flagCol, idCol, compCols):
 
   if firstVl == lastVl:
     DayTable.loc[firstVl, flagCol] = False
+
   else:
     for line, value in DayTable.iterrows():
 
-      isCrossed = True
-
       if line == firstVl:
-        if value[compCols[1]] < DayTable.loc[getNextIndex(IndexOrder, line), compCols[0]]:
-          isCrossed = False
+        nextLine = DayTable.loc[getNextIndex(IndexOrder, line), compCols[0]]
+
+        if value[compCols[1]] < nextLine: 
           DayTable.loc[line, flagCol] = False
           id = tokenCreator()
+
         else:
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
+
       elif line == lastVl:
-        if value[compCols[0]] > DayTable.loc[getPrevIndex(IndexOrder, line), compCols[1]]:
-          isCrossed = False
+        prevLine = DayTable.loc[getPrevIndex(IndexOrder, line), compCols[1]]
+
+        if value[compCols[0]] > prevLine:
           DayTable.loc[line, flagCol] = False
           id = tokenCreator()
+
         else:
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
+
       else:
-        downCrossed = value[compCols[1]] > DayTable.loc[getNextIndex(IndexOrder, line), compCols[0]]
-        upCrossed = value[compCols[0]] < DayTable.loc[getPrevIndex(IndexOrder, line), compCols[1]]
+        downCrossed = value[ compCols[ 1 ] ] > DayTable.loc [ 
+                                            getNextIndex(
+                                              IndexOrder,
+                                              line
+                                            ),
+                                            compCols [ 0 ] ]
+
+        upCrossed = value[ compCols[ 0 ] ] < DayTable.loc [
+                                            getPrevIndex(
+                                              IndexOrder,
+                                              line
+                                            ),
+                                            compCols [ 1 ] ]
+
         if not downCrossed and not upCrossed:
           DayTable.loc[line, flagCol] = False
+
         elif downCrossed and not upCrossed:
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
+
         elif upCrossed and not downCrossed:
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
           id = tokenCreator()
+          
         else:
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
 
   return DayTable
+
+def createPercentCol( table, col, dvsCol, dvdCol ):
+  for line, value in table.iterrows():
+
+    if(value["isCrossed"]):
+      table.loc[line, col] = table.loc[line, dvdCol] / table.loc[line, dvsCol]
+    else:
+      table.loc[line, col] = 1
+
+def createFractCol(table, col, divCol, perCol, defaultCol):
+  for line, value in table.iterrows():
+
+    if(value["isCrossed"]):
+      table.loc[line, col] = table.loc[line, divCol] / 100 * table.loc[line, perCol] * 100
+    else:
+      table.loc[line, col] = value[defaultCol]
+
+def removeInternalCols(table, cols):
+  for col in cols:
+    del table[col]
+
 
