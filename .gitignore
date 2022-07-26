@@ -10,6 +10,7 @@ __pycache__/
 .Python
 build/
 **/files
+**/vs2
 develop-eggs/
 dist/
 downloads/

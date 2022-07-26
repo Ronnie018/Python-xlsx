@@ -1,6 +1,5 @@
 from random import randint
 import pandas as pd
-import assets.utils as ut
 
 def replacer(oldTable, newVals):
   if type(oldTable) == type(pd.DataFrame()):
@@ -11,14 +10,12 @@ def replacer(oldTable, newVals):
       oldTable.loc[newVals.index[0]] = newVals.loc[newVals.index[0]]
   else: 
     return
-
+  
 
 
 def createHeaders(table, headers):
-  if type(table) == type(pd.DataFrame()):
-
-    for header in headers:
-      table.loc[:, header] = None
+  for header in headers:
+    table.loc[:, header] = None
 
 
 
@@ -71,6 +68,7 @@ def setDay(oldTable, tables, startCol, col):
   for table in tables:
     for line, value in table.iterrows():
       table.loc[line, col] = tsDay(value[startCol])
+    print(oldTable, table)
     replacer(oldTable, table)
 
 
@@ -105,12 +103,10 @@ def getPrevIndex(indexArray, curr):
 
 def tokenCreator():
   alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-  special = "[{][/*+-,.=§/?°@#$%¨&*()&"
   token = ""
   for _ in range(0, 6):
     token += str(randint(0, 9))
     token += alph[randint(0, 51)]
-    token += special[randint(0, 26)]
   return token
 
 
@@ -210,5 +206,4 @@ def createFractCol(table, col, divCol, perCol, defaultCol):
 def removeInternalCols(table, cols):
   for col in cols:
     del table[col]
-
 
