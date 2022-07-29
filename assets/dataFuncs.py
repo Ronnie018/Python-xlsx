@@ -118,7 +118,7 @@ def setCrossAttr(
   compCols
 ):
 
-  DayTable = DayTable.sort_values(by=compCols[0])
+  DayTable = DayTable.sort_values(by=compCols[0]) ## compcols 0 é coluna de inicio e compcols1 é final
 
   firstVl, lastVl = getFirstAndLast(DayTable)
 
