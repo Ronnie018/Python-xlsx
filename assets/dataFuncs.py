@@ -3,14 +3,22 @@ import pandas as pd
 
 def replacer(oldTable, newVals):
   if type(oldTable) == type(pd.DataFrame()):
-    if(len(newVals) > 1):
+    if len(newVals) > 1:
       for line, value in newVals.iterrows():
         oldTable.loc[line] = value
     else:
+      if len(newVals) == 0:
+        return 
       oldTable.loc[newVals.index[0]] = newVals.loc[newVals.index[0]]
   else: 
     return
   
+  
+# def removeLinesWithValue(Table, column, value):
+#   del Table.loc[Table[column] == value]
+  
+def filterBy(Table, column, value):
+  return Table.loc[Table[column] == value]
 
 
 def createHeaders(table, headers):
@@ -60,7 +68,7 @@ def getDiferentDays(table, startCol):
 
 
 def tsDay(ts):
-  return str(ts)[0:10]
+  return str(ts).split(" ")[0]
 
 
 
@@ -68,7 +76,6 @@ def setDay(oldTable, tables, startCol, col):
   for table in tables:
     for line, value in table.iterrows():
       table.loc[line, col] = tsDay(value[startCol])
-    print(oldTable, table)
     replacer(oldTable, table)
 
 
@@ -155,12 +162,7 @@ def setCrossAttr(
           DayTable.loc[line, idCol] = id
 
       else:
-        downCrossed = value[ compCols[ 1 ] ] > DayTable.loc [ 
-                                            getNextIndex(
-                                              IndexOrder,
-                                              line
-                                            ),
-                                            compCols [ 0 ] ]
+        downCrossed = value[ compCols[ 1 ] ] > DayTable.loc [ getNextIndex(IndexOrder, line), compCols [ 0 ] ]
 
         upCrossed = value[ compCols[ 0 ] ] < DayTable.loc [
                                             getPrevIndex(
