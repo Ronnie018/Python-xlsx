@@ -10,12 +10,8 @@ def replacer(oldTable, newVals):
       if len(newVals) == 0:
         return 
       oldTable.loc[newVals.index[0]] = newVals.loc[newVals.index[0]]
-  else: 
+  else:
     return
-  
-  
-# def removeLinesWithValue(Table, column, value):
-#   del Table.loc[Table[column] == value]
   
 def filterBy(Table, column, value):
   return Table.loc[Table[column] == value]
@@ -201,7 +197,7 @@ def createFractCol(table, col, divCol, perCol, defaultCol):
   for line, value in table.iterrows():
 
     if(value["isCrossed"]):
-      table.loc[line, col] = table.loc[line, divCol] / 100 * table.loc[line, perCol] * 100
+      table.loc[line, col] = table.loc[line, divCol] * table.loc[line, perCol]
     else:
       table.loc[line, col] = value[defaultCol]
 

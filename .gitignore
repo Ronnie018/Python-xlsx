@@ -11,6 +11,7 @@ __pycache__/
 build/
 **/files
 **/vs2
+assets/utils.py
 develop-eggs/
 dist/
 downloads/

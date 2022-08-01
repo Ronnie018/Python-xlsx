@@ -109,7 +109,7 @@ for idTable in idTables:
 for idTable in idTables:
   df.replacer(table, idTable)
 
-## coluna de porcento é = tempo dos cruzados / tempo de chamado
+## coluna de porcento é = tempo de chamado / tempo de Cruzados
 df.createPercentCol(table, newCols[6], newCols[4], newCols[0])
 ## coluna fracionada[calculo final] é = (tempo real[ReCrTime] / 100) * (col porcentagem * 100)
 #_# ou valor padrão carregado como coluna 0 caso não seja uma valor cruzado
