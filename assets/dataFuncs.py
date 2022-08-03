@@ -1,6 +1,39 @@
 from random import randint
 import pandas as pd
 
+class createToken():
+  def __init__(self):
+    self.tokenList = []
+    self.alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    
+  def create(self, size=12):
+    token = self.generate(size)
+    isNew = self.verifier(token)
+    while True:
+      if isNew:
+        break
+      else:
+        token = self.generate(size)
+        isNew = self.verifier(token)
+    
+    self.tokenList.append(token)
+    return token
+      
+  def generate(self, size):
+    size = int(size/2)
+    token = ""
+    for _ in range(0, size):
+      token += str(randint(0, 9))
+      token += self.alpha[randint(0, 51)]
+    return token
+  
+
+  def verifier(self, token):
+    if token not in self.tokenList:
+      return True
+    else:
+      return False
+
 def replacer(oldTable, newVals):
   if type(oldTable) == type(pd.DataFrame()):
     if len(newVals) > 1:
@@ -13,6 +46,9 @@ def replacer(oldTable, newVals):
   else:
     return
   
+def setProjectCall(Table, startCol, endCol, newCol):
+  Table.loc[:,newCol] = (Table[endCol] - Table[startCol]) > 1
+
 def filterBy(Table, column, value):
   return Table.loc[Table[column] == value]
 
@@ -103,23 +139,14 @@ def getPrevIndex(indexArray, curr):
     print("erro em dataFuncs/getPrevIndex()")
 
 
-
-def tokenCreator():
-  alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-  token = ""
-  for _ in range(0, 6):
-    token += str(randint(0, 9))
-    token += alph[randint(0, 51)]
-  return token
-
-
-
 def setCrossAttr(
   DayTable,
   flagCol,
   idCol,
   compCols
 ):
+  
+  tokenCreator = createToken()
 
   DayTable = DayTable.sort_values(by=compCols[0]) ## compcols 0 é coluna de inicio e compcols1 é final
 
@@ -127,7 +154,7 @@ def setCrossAttr(
 
   IndexOrder = DayTable.loc[:].index.values
 
-  id = tokenCreator()
+  id = tokenCreator.create(12)
 
   if firstVl == lastVl:
     DayTable.loc[firstVl, flagCol] = False
@@ -140,7 +167,7 @@ def setCrossAttr(
 
         if value[compCols[1]] < nextLine: 
           DayTable.loc[line, flagCol] = False
-          id = tokenCreator()
+          id = tokenCreator.create(12)
 
         else:
           DayTable.loc[line, flagCol] = True
@@ -151,7 +178,7 @@ def setCrossAttr(
 
         if value[compCols[0]] > prevLine:
           DayTable.loc[line, flagCol] = False
-          id = tokenCreator()
+          id = tokenCreator.create(12)
 
         else:
           DayTable.loc[line, flagCol] = True
@@ -177,7 +204,7 @@ def setCrossAttr(
         elif upCrossed and not downCrossed:
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
-          id = tokenCreator()
+          id = tokenCreator.create(12)
           
         else:
           DayTable.loc[line, flagCol] = True
@@ -204,4 +231,3 @@ def createFractCol(table, col, divCol, perCol, defaultCol):
 def removeInternalCols(table, cols):
   for col in cols:
     del table[col]
-

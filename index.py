@@ -1,7 +1,7 @@
 import pandas as pd
 import assets.dataFuncs as df
 
-initialTable = pd.read_excel("excel.xlsx")
+table = pd.read_excel("excel.xlsx")
 
 newCols = [
   "call_time",
@@ -11,7 +11,8 @@ newCols = [
   "crossed_time",
   "crossed_real_time",
   "porcentagem",
-  "fraction"
+  "fraction",
+  "isProject"
 ]
 
 internalCols = [
@@ -30,11 +31,10 @@ useCols = {
   "STATUS": "Description"
 }
 
-df.createHeaders(initialTable, newCols)
+df.createHeaders(table, newCols)
 
-table = initialTable.copy(deep=False)
+df.setProjectCall(table, useCols["START"], useCols["END"], newCols[8])
 
-table = df.filterBy(table, useCols["STATUS"], "closed")
 
 
 df.setTotalTime(
@@ -115,8 +115,6 @@ df.createPercentCol(table, newCols[6], newCols[4], newCols[0])
 #_# ou valor padrão carregado como coluna 0 caso não seja uma valor cruzado
 df.createFractCol(table, newCols[7], newCols[5], newCols[6], newCols[0])
 
-df.replacer(initialTable, table)
-
 # df.removeInternalCols(table, internalCols)
 
-initialTable.to_excel("files/final.xlsx", index=False)
+table.to_excel("files/final.xlsx", index=False)
