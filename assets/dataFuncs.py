@@ -233,7 +233,6 @@ def removeInternalCols(table, cols):
     del table[col]
 
 
-
 def removeMultidays(table, cols):
   for line, value in table.iterrows():
     start = tsDay(value[str(cols[0])])

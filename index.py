@@ -33,7 +33,7 @@ useCols = {
 
 df.createHeaders(table, newCols)
 
-table = df.removeMultidays(
+table = df.removeMultidays( #new 
   table,
   [useCols["START"],
   useCols["END"]]
