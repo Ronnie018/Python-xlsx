@@ -4,7 +4,7 @@ class createToken():
   def __init__(self):
     self.tokenList = []
     self.alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    
+
   def create(self, size):
     token = self.generate(size)
     isNew = self.verifier(token)
@@ -14,7 +14,7 @@ class createToken():
       else:
         token = self.generate(size)
         isNew = self.verifier(token)
-    
+
     self.tokenList.append(token)
     return token
       

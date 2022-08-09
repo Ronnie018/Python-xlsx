@@ -1,5 +1,6 @@
 from random import randint
 import pandas as pd
+import time as tm
 
 class createToken():
   def __init__(self):
@@ -15,10 +16,10 @@ class createToken():
       else:
         token = self.generate(size)
         isNew = self.verifier(token)
-    
+
     self.tokenList.append(token)
     return token
-      
+
   def generate(self, size):
     size = int(size/2)
     token = ""
@@ -33,7 +34,8 @@ class createToken():
       return True
     else:
       return False
-
+    
+    
 def replacer(oldTable, newVals):
   if type(oldTable) == type(pd.DataFrame()):
     if len(newVals) > 1:
@@ -46,17 +48,21 @@ def replacer(oldTable, newVals):
   else:
     return
   
+  
 def setProjectCall(Table, startCol, endCol, newCol):
   Table.loc[:,newCol] = (Table[endCol] - Table[startCol]) > 1
+
 
 def filterBy(Table, column, value):
   return Table.loc[Table[column] == value]
 
+def separateDuplicates(table, col):
+  return table.loc[not table.duplicates()]
+  
 
 def createHeaders(table, headers):
   for header in headers:
     table.loc[:, header] = None
-
 
 
 def getValuesFromTable(table, col): 
@@ -83,10 +89,8 @@ def getPersonalTables(table, names, col):
   return newNames
 
 
-
 def setTotalTime(table, startCol, endCol, col):
   table.loc[:, [col]] = table[endCol] - table[startCol]
-
 
 
 def getDiferentDays(table, startCol):
@@ -98,10 +102,8 @@ def getDiferentDays(table, startCol):
   return days
 
 
-
 def tsDay(ts):
   return str(ts).split(" ")[0]
-
 
 
 def setDay(oldTable, tables, startCol, col):
@@ -111,16 +113,14 @@ def setDay(oldTable, tables, startCol, col):
     replacer(oldTable, table)
 
 
-
 def getFirstAndLast(table):
   first = None
   last = None
-  for line, values in table.iterrows():
+  for line, _ in table.iterrows():
     if first is None:
       first = line
     last = line
   return [first, last]
-
 
 
 def getNextIndex(indexArray, curr):
@@ -145,10 +145,10 @@ def setCrossAttr(
   idCol,
   compCols
 ):
-  
+
   tokenCreator = createToken()
 
-  DayTable = DayTable.sort_values(by=compCols[0]) ## compcols 0 é coluna de inicio e compcols1 é final
+  DayTable = DayTable.sort_values(by=compCols[0])
 
   firstVl, lastVl = getFirstAndLast(DayTable)
 
@@ -205,7 +205,7 @@ def setCrossAttr(
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
           id = tokenCreator.create(12)
-          
+
         else:
           DayTable.loc[line, flagCol] = True
           DayTable.loc[line, idCol] = id
@@ -231,3 +231,13 @@ def createFractCol(table, col, divCol, perCol, defaultCol):
 def removeInternalCols(table, cols):
   for col in cols:
     del table[col]
+
+
+
+def removeMultidays(table, cols):
+  for line, value in table.iterrows():
+    start = tsDay(value[str(cols[0])])
+    end = tsDay(value[str(cols[1])])
+    if start != end:
+      table = table.drop(index=line)
+  return table

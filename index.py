@@ -33,9 +33,11 @@ useCols = {
 
 df.createHeaders(table, newCols)
 
-df.setProjectCall(table, useCols["START"], useCols["END"], newCols[8])
-
-
+table = df.removeMultidays(
+  table,
+  [useCols["START"],
+  useCols["END"]]
+)
 
 df.setTotalTime(
   table,
@@ -58,7 +60,7 @@ df.setDay(
   table,
   personal_tables,
   useCols["START"],
-  newCols[1]
+  newCols[1],
 )
 
 for pTable in personal_tables: 
@@ -100,21 +102,18 @@ idTables = df.getPersonalTables(
 )
 
 for idTable in idTables:
-  ## COLUNA CROSSEDTIME = soma de todos os elementos com o id referente
   idTable[ newCols[4] ] = idTable[ newCols[0] ].sum()
-  
-  ## COLUNA REAL CROSSEDTIME = TEMPO TOTAL DIÁRIO DENTRE OS CRUZADOS [NÃO POR CHAMADO, POR DIA[CRSSD]]
+
   idTable[ newCols[5] ] = idTable[ useCols["END"] ].max() - idTable[ useCols["START"] ].min()
 
 for idTable in idTables:
   df.replacer(table, idTable)
 
-## coluna de porcento é = tempo de chamado / tempo de Cruzados
 df.createPercentCol(table, newCols[6], newCols[4], newCols[0])
-## coluna fracionada[calculo final] é = (tempo real[ReCrTime] / 100) * (col porcentagem * 100)
-#_# ou valor padrão carregado como coluna 0 caso não seja uma valor cruzado
+
 df.createFractCol(table, newCols[7], newCols[5], newCols[6], newCols[0])
 
-# df.removeInternalCols(table, internalCols)
+
+table.to_clipboard(index=False)
 
 table.to_excel("files/final.xlsx", index=False)
