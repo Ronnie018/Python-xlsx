@@ -15,11 +15,12 @@ with open("./bundle.py", "w", encoding="utf-8") as bundle:
   bundleText = ""
   
   for line in file1.readlines():
-    if len(line) < 2:
+    if len(line) < 3 and not(")" in line or "]" in line or "}" in line):
       continue
-    bundleText += line + "\n"
+    bundleText += line
 
   for line in file2.readlines():
+    print(line, "_________",len(line))
     importVr = re.compile(r"import")
     
     line = formatLine(line)
@@ -28,9 +29,9 @@ with open("./bundle.py", "w", encoding="utf-8") as bundle:
       continue
     elif "table.to_excel" in line:
       continue
-    elif len(line) < 2:
+    elif len(line) < 3 and not(")" in line or "]" in line or "}" in line):
       continue
-    bundleText += line + "\n"
+    bundleText += line
     
   
   bundle.writelines(bundleText)
